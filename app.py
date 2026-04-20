@@ -8,6 +8,7 @@ Abrir:    http://localhost:5000
 from flask import Flask, render_template, request, jsonify
 import numpy as np
 import json
+import os
 
 app = Flask(__name__)
 
@@ -183,4 +184,5 @@ if __name__ == "__main__":
     print("  🌾 Problema de Transporte de Grano")
     print("  Abre en tu navegador: http://localhost:5000")
     print("="*50 + "\n")
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
