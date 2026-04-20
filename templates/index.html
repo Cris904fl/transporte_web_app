@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transporte de Grano — Colombia → Europa del Este</title>
+<style>
+  :root {
+    --bg: #f4f2ed;
+    --card: #ffffff;
+    --border: rgba(0,0,0,0.1);
+    --text: #1a1a18;
+    --muted: #6b6b68;
+    --blue: #1a5fa8;
+    --blue-light: #e8f0fb;
+    --green: #1e7e34;
+    --green-light: #e8f5e9;
+    --amber: #c07000;
+    --amber-light: #fff8e1;
+    --red: #c62828;
+    --red-light: #ffebee;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6; }
+
+  /* ── HEADER ── */
+  header { background: var(--blue); color: white; padding: 18px 28px; display: flex; align-items: center; gap: 14px; }
+  header h1 { font-size: 18px; font-weight: 600; }
+  header p  { font-size: 12px; opacity: .8; }
+  .header-icon { font-size: 32px; }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 20px 16px; }
+  .tabs { display: flex; gap: 4px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab { padding: 8px 18px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); color: var(--muted); cursor: pointer; font-size: 13px; transition: .15s; font-weight: 500; }
+  .tab:hover { background: var(--blue-light); color: var(--blue); }
+  .tab.active { background: var(--blue); color: white; border-color: var(--blue); }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); }
+  .card h2 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .card .desc { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+  @media(max-width:640px) { .grid2,.grid3 { grid-template-columns: 1fr; } }
+
+  /* ── METRIC CARDS ── */
+  .metric { background: #f8f7f4; border-radius: 8px; padding: 12px 14px; }
+  .metric-label { font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+  .metric-value { font-size: 22px; font-weight: 700; color: var(--text); }
+  .metric-unit  { font-size: 11px; color: var(--muted); }
+
+  /* ── TABLES ── */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { padding: 8px 10px; text-align: left; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid var(--border); }
+  td { padding: 9px 10px; border-bottom: 1px solid rgba(0,0,0,0.04); }
+  tr:last-child td { border: none; }
+  .total-row td { font-weight: 600; background: #f8f7f4; }
+  input[type=number] { width: 90px; padding: 5px 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; text-align: right; background: #fafafa; }
+  input[type=number]:focus { outline: none; border-color: var(--blue); background: white; }
+
+  /* ── BUTTONS ── */
+  .btn { padding: 9px 20px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: .15s; }
+  .btn-primary { background: var(--blue); color: white; border-color: var(--blue); }
+  .btn-primary:hover { background: #144d8a; }
+  .btn-secondary { background: white; color: var(--text); }
+  .btn-secondary:hover { background: #f0f0f0; }
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+
+  /* ── BADGES ── */
+  .badge { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-green  { background: var(--green-light);  color: var(--green); }
+  .badge-blue   { background: var(--blue-light);   color: var(--blue); }
+  .badge-amber  { background: var(--amber-light);  color: var(--amber); }
+  .badge-red    { background: var(--red-light);    color: var(--red); }
+
+  /* ── CANVAS ── */
+  #redCanvas { width: 100%; border-radius: 10px; display: block; background: #f8f7f4; }
+
+  /* ── VOGEL STEPS ── */
+  .vogel-step { padding: 9px 12px; border-left: 3px solid var(--blue); background: var(--blue-light); border-radius: 0 8px 8px 0; margin-bottom: 6px; font-size: 12px; }
+  .vogel-step strong { color: var(--blue); }
+  #vogel-container { max-height: 280px; overflow-y: auto; padding-right: 4px; }
+
+  /* ── RANGE SLIDER ── */
+  .slider-wrap { display: flex; align-items: center; gap: 12px; }
+  input[type=range] { flex: 1; accent-color: var(--blue); }
+  .slider-val { font-size: 13px; font-weight: 600; min-width: 100px; }
+
+  /* ── CRITERIO BUTTONS ── */
+  .crit-btn { padding: 8px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: .15s; background: white; color: var(--muted); }
+  .crit-btn.active { background: var(--blue); color: white; border-color: var(--blue); }
+
+  /* ── PROGRESS BARS ── */
+  .prog-wrap { background: #e8e8e8; border-radius: 4px; height: 10px; overflow: hidden; margin: 4px 0; }
+  .prog-bar  { height: 100%; border-radius: 4px; transition: width .5s; }
+
+  /* ── SKILL CARDS ── */
+  .skill-card { border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+  .skill-icon { font-size: 22px; margin-bottom: 6px; }
+  .skill-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .skill-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* ── STEPS LIST ── */
+  .steps-list { counter-reset: steps; }
+  .step-item { counter-increment: steps; display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .step-item:last-child { border: none; }
+  .step-num { width: 26px; height: 26px; border-radius: 50%; background: var(--blue-light); color: var(--blue); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .step-text { font-size: 13px; line-height: 1.5; }
+  .step-text strong { color: var(--text); }
+
+  /* ── ALERT ── */
+  .alert { padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; }
+  .alert-ok   { background: var(--green-light); color: var(--green); border: 1px solid #a5d6a7; }
+  .alert-warn { background: var(--amber-light); color: var(--amber); border: 1px solid #ffe082; }
+
+  /* ── FORMULA BOX ── */
+  .formula { background: #1a1a18; color: #a8d8a8; border-radius: 10px; padding: 16px 20px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.9; margin-bottom: 16px; }
+  .formula .comment { color: #888; }
+
+  /* ── LOADER ── */
+  #loader { display: none; text-align: center; padding: 30px; color: var(--muted); font-size: 13px; }
+  .spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin .7s linear infinite; margin-right: 8px; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-icon">🌾</div>
+  <div>
+    <h1>Problema de Transporte de Grano</h1>
+    <p>Colombia → Europa del Este &nbsp;|&nbsp; Optimización de costos de distribución</p>
+  </div>
+</header>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('datos',this)">📋 Datos</button>
+    <button class="tab" onclick="switchTab('solucion',this)">⚙️ Solución óptima</button>
+    <button class="tab" onclick="switchTab('red',this)">🌐 Red de flujos</button>
+    <button class="tab" onclick="switchTab('escasez',this)">⚠️ Escenario escasez</button>
+    <button class="tab" onclick="switchTab('habilidades',this)">🧠 Habilidades</button>
+  </div>
+
+  <!-- ══ PESTAÑA: DATOS ══ -->
+  <div class="panel active" id="panel-datos">
+    <div class="card">
+      <h2>Orígenes — Almacenes en Colombia</h2>
+      <div class="desc">Toneladas de grano excedente disponibles en cada ciudad.</div>
+      <table>
+        <thead><tr><th>Ciudad</th><th>Disponibilidad (ton)</th></tr></thead>
+        <tbody id="supply-tbody">
+          <tr><td>Manizales</td><td><input type="number" id="s0" value="100000" min="0" step="1000" onchange="updateTotals()"></td></tr>
+          <tr><td>Pereira</td>  <td><input type="number" id="s1" value="150000" min="0" step="1000" onchange="updateTotals()"></td></tr>
+          <tr><td>Armenia</td>  <td><input type="number" id="s2" value="95000"  min="0" step="1000" onchange="updateTotals()"></td></tr>
+        </tbody>
+        <tfoot><tr class="total-row"><td>Total oferta</td><td id="total-oferta">345,000 ton</td></tr></tfoot>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Destinos — Puntos de demanda en Europa del Este</h2>
+      <div class="desc">Toneladas mínimas requeridas en cada destino.</div>
+      <table>
+        <thead><tr><th>Ciudad</th><th>Demanda (ton)</th></tr></thead>
+        <tbody>
+          <tr><td>Sarajevo</td><td><input type="number" id="d0" value="75000"  min="0" step="1000" onchange="updateTotals()"></td></tr>
+          <tr><td>Ucrania</td> <td><input type="number" id="d1" value="150000" min="0" step="1000" onchange="updateTotals()"></td></tr>
+          <tr><td>Polonia</td> <td><input type="number" id="d2" value="120000" min="0" step="1000" onchange="updateTotals()"></td></tr>
+        </tbody>
+        <tfoot><tr class="total-row"><td>Total demanda</td><td id="total-demanda">345,000 ton</td></tr></tfoot>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Costos de envío ($/tonelada)</h2>
+      <div class="desc">Costo unitario estimado por el gobierno para cada ruta origen → destino.</div>
+      <table>
+        <thead><tr><th>Origen \ Destino</th><th>Sarajevo</th><th>Ucrania</th><th>Polonia</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Manizales</strong></td><td><input type="number" id="c00" value="12" min="1"></td><td><input type="number" id="c01" value="8" min="1"></td><td><input type="number" id="c02" value="10" min="1"></td></tr>
+          <tr><td><strong>Pereira</strong></td>  <td><input type="number" id="c10" value="9"  min="1"></td><td><input type="number" id="c11" value="11" min="1"></td><td><input type="number" id="c12" value="7"  min="1"></td></tr>
+          <tr><td><strong>Armenia</strong></td>  <td><input type="number" id="c20" value="14" min="1"></td><td><input type="number" id="c21" value="9"  min="1"></td><td><input type="number" id="c22" value="13" min="1"></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="resolver()">▶ Calcular solución óptima</button>
+      <button class="btn btn-secondary" onclick="resetData()">↺ Datos originales</button>
+    </div>
+  </div>
+
+  <!-- ══ PESTAÑA: SOLUCIÓN ══ -->
+  <div class="panel" id="panel-solucion">
+    <div id="loader"><span class="spinner"></span>Calculando solución con método de Vogel…</div>
+    <div id="sol-content" style="display:none">
+      <div id="sol-alert"></div>
+      <div class="grid3" id="sol-metrics" style="margin-bottom:16px"></div>
+
+      <div class="card">
+        <h2>Asignaciones óptimas — Método de Vogel</h2>
+        <div class="desc">Cada ruta activa con el volumen asignado y el costo parcial correspondiente.</div>
+        <table>
+          <thead><tr><th>Ruta</th><th>Toneladas</th><th>$/ton</th><th>Costo parcial</th><th>Estado</th></tr></thead>
+          <tbody id="sol-rutas"></tbody>
+          <tfoot><tr class="total-row"><td colspan="3">Costo total mínimo</td><td id="sol-total" colspan="2"></td></tr></tfoot>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Cobertura de demanda</h2>
+        <div class="desc">Verificación de que cada destino recibe las toneladas que necesita.</div>
+        <div id="sol-cobertura"></div>
+      </div>
+
+      <div class="card">
+        <h2>Procedimiento — Método de Vogel paso a paso</h2>
+        <div class="desc">Iteraciones del algoritmo: penalización máxima → asignación → eliminación de fila/columna.</div>
+        <div id="vogel-container"></div>
+      </div>
+
+      <div class="card">
+        <h2>Formulación matemática</h2>
+        <div class="formula" id="formula-box"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PESTAÑA: RED ══ -->
+  <div class="panel" id="panel-red">
+    <div class="card">
+      <h2>Red de distribución óptima</h2>
+      <div class="desc">Grosor y color de cada flecha proporcionales al volumen enviado. Haz clic en <strong>Calcular</strong> para actualizar.</div>
+      <canvas id="redCanvas" height="360"></canvas>
+      <div id="red-summary" style="margin-top:10px;font-size:13px;color:var(--muted);text-align:center"></div>
+    </div>
+  </div>
+
+  <!-- ══ PESTAÑA: ESCASEZ ══ -->
+  <div class="panel" id="panel-escasez">
+    <div class="card">
+      <h2>Escenario de escasez</h2>
+      <div class="desc">Simula qué pasa cuando la oferta total es <strong>menor</strong> a la demanda. Ajusta la disponibilidad y elige el criterio de distribución.</div>
+
+      <div style="margin-bottom:14px">
+        <div style="font-size:13px;font-weight:600;margin-bottom:6px">Oferta disponible en escasez</div>
+        <div class="slider-wrap">
+          <input type="range" id="esc-slider" min="80000" max="344000" step="5000" value="250000" oninput="onSlider()">
+          <span class="slider-val" id="esc-val">250,000 ton</span>
+        </div>
+      </div>
+
+      <div style="margin-bottom:14px">
+        <div style="font-size:13px;font-weight:600;margin-bottom:8px">Criterio de distribución</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="crit-btn active" id="crit-proporcional" onclick="setCrit('proporcional')">⚖️ Proporcional</button>
+          <button class="crit-btn" id="crit-min_costo" onclick="setCrit('min_costo')">💰 Mínimo costo</button>
+          <button class="crit-btn" id="crit-urgencia" onclick="setCrit('urgencia')">🚨 Por urgencia</button>
+        </div>
+      </div>
+
+      <div id="esc-result"></div>
+      <div id="esc-reflexion" class="alert alert-warn" style="margin-top:12px">
+        💡 <strong>Reflexión:</strong> Ante escasez, el problema deja de ser puramente matemático. El criterio elegido refleja valores políticos y éticos: ¿Es más justo que todos reciban el mismo porcentaje? ¿O que los más urgentes reciban primero?
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PESTAÑA: HABILIDADES ══ -->
+  <div class="panel" id="panel-habilidades">
+    <div class="card">
+      <h2>Habilidades del pensamiento utilizadas</h2>
+      <div class="desc">Competencias cognitivas activadas en cada etapa del análisis.</div>
+      <div class="grid2" style="margin-top:4px">
+        <div class="skill-card"><div class="skill-icon">🔍</div><div class="skill-name">Análisis</div><div class="skill-desc">Descomponer el problema en sus elementos esenciales: orígenes, destinos, capacidades y costos de envío.</div></div>
+        <div class="skill-card"><div class="skill-icon">🧩</div><div class="skill-name">Abstracción</div><div class="skill-desc">Convertir la situación real en un modelo matemático con variables x<sub>ij</sub>, función objetivo y restricciones.</div></div>
+        <div class="skill-card"><div class="skill-icon">⚖️</div><div class="skill-name">Evaluación</div><div class="skill-desc">Comparar múltiples distribuciones posibles y seleccionar la que minimiza el costo cumpliendo todas las restricciones.</div></div>
+        <div class="skill-card"><div class="skill-icon">🔄</div><div class="skill-name">Pensamiento sistémico</div><div class="skill-desc">Ver la red como sistema de flujos interdependientes: cambiar una asignación afecta al equilibrio de todo el sistema.</div></div>
+        <div class="skill-card"><div class="skill-icon">🎯</div><div class="skill-name">Toma de decisiones</div><div class="skill-desc">Elegir entre distribuciones factibles según criterios definidos: eficiencia, equidad o urgencia humanitaria.</div></div>
+        <div class="skill-card"><div class="skill-icon">💡</div><div class="skill-name">Pensamiento ético-crítico</div><div class="skill-desc">Reconocer que ante escasez el costo no es el único criterio válido: la justicia distributiva también importa.</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Procedimiento aplicado</h2>
+      <div class="desc">Pasos metodológicos seguidos para resolver el problema de transporte.</div>
+      <div class="steps-list">
+        <div class="step-item"><div class="step-num">1</div><div class="step-text"><strong>Reconocimiento:</strong> Identificar que se trata de un problema de transporte (modelo clásico de Investigación de Operaciones).</div></div>
+        <div class="step-item"><div class="step-num">2</div><div class="step-text"><strong>Levantamiento de datos:</strong> Construir la tabla de oferta, demanda y costos unitarios por ruta origen–destino.</div></div>
+        <div class="step-item"><div class="step-num">3</div><div class="step-text"><strong>Verificación de balance:</strong> Comparar oferta total vs demanda total para clasificar el problema (balanceado o desbalanceado).</div></div>
+        <div class="step-item"><div class="step-num">4</div><div class="step-text"><strong>Formulación matemática:</strong> Definir variables de decisión x<sub>ij</sub>, función objetivo (min Z = Σ c<sub>ij</sub>·x<sub>ij</sub>) y restricciones de oferta y demanda.</div></div>
+        <div class="step-item"><div class="step-num">5</div><div class="step-text"><strong>Método de Vogel:</strong> Calcular penalizaciones (diferencia entre los dos menores costos por fila/columna) y asignar iterativamente.</div></div>
+        <div class="step-item"><div class="step-num">6</div><div class="step-text"><strong>Verificación:</strong> Confirmar que toda la demanda quedó cubierta y que ningún origen superó su capacidad disponible.</div></div>
+        <div class="step-item"><div class="step-num">7</div><div class="step-text"><strong>Escenario de escasez:</strong> Reformular el modelo con variables de déficit y aplicar criterios alternativos de distribución.</div></div>
+        <div class="step-item"><div class="step-num">8</div><div class="step-text"><strong>Comunicación:</strong> Traducir la solución matemática a un plan de acción comprensible con tablas, gráficas y visualizaciones.</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Modelo matemático completo</h2>
+      <div class="formula">
+<span class="comment">// Minimizar costo total de envío</span>
+min Z = Σᵢ Σⱼ  cᵢⱼ · xᵢⱼ
+
+<span class="comment">// Restricciones de oferta (no enviar más de lo disponible)</span>
+Σⱼ xᵢⱼ  ≤  Sᵢ    ∀ i ∈ {Manizales, Pereira, Armenia}
+
+<span class="comment">// Restricciones de demanda (cubrir toda la necesidad)</span>
+Σᵢ xᵢⱼ  ≥  Dⱼ    ∀ j ∈ {Sarajevo, Ucrania, Polonia}
+
+<span class="comment">// No negatividad</span>
+xᵢⱼ  ≥  0   ∀ i, j
+
+<span class="comment">// Caso escasez: añadir variable de déficit sⱼ</span>
+Σᵢ xᵢⱼ + sⱼ = Dⱼ    (sⱼ ≥ 0)
+min Z = Σ cᵢⱼ·xᵢⱼ + Σ P·sⱼ   (P = penalización por déficit)
+      </div>
+    </div>
+  </div>
+</div><!-- /container -->
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  ESTADO
+// ═══════════════════════════════════════════════════════════
+const ORIGENES = ['Manizales','Pereira','Armenia'];
+const DESTINOS = ['Sarajevo','Ucrania','Polonia'];
+let lastAlloc = null;
+let currentCrit = 'proporcional';
+
+// ═══════════════════════════════════════════════════════════
+//  HELPERS DE LECTURA
+// ═══════════════════════════════════════════════════════════
+function getOferta()  { return [0,1,2].map(i => +document.getElementById('s'+i).value); }
+function getDemanda() { return [0,1,2].map(j => +document.getElementById('d'+j).value); }
+function getCostos()  {
+  return [0,1,2].map(i => [0,1,2].map(j => +document.getElementById(`c${i}${j}`).value));
+}
+
+function fmt(n){ return Number(n).toLocaleString('es-CO'); }
+
+function updateTotals(){
+  document.getElementById('total-oferta').textContent  = fmt(getOferta().reduce((a,b)=>a+b,0)) + ' ton';
+  document.getElementById('total-demanda').textContent = fmt(getDemanda().reduce((a,b)=>a+b,0)) + ' ton';
+}
+
+function resetData(){
+  [100000,150000,95000].forEach((v,i)=>document.getElementById('s'+i).value=v);
+  [75000,150000,120000].forEach((v,j)=>document.getElementById('d'+j).value=v);
+  [[12,8,10],[9,11,7],[14,9,13]].forEach((row,i)=>row.forEach((v,j)=>document.getElementById(`c${i}${j}`).value=v));
+  updateTotals();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  TABS
+// ═══════════════════════════════════════════════════════════
+function switchTab(id, btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
+  if(id==='red' && lastAlloc) drawNetwork(lastAlloc);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  RESOLVER
+// ═══════════════════════════════════════════════════════════
+async function resolver(){
+  document.getElementById('loader').style.display = 'block';
+  document.getElementById('sol-content').style.display = 'none';
+  switchTab('solucion', document.querySelectorAll('.tab')[1]);
+
+  const payload = {
+    origenes: ORIGENES, destinos: DESTINOS,
+    oferta: getOferta(), demanda: getDemanda(), costos: getCostos()
+  };
+
+  const res  = await fetch('/resolver', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  lastAlloc  = data.alloc;
+
+  document.getElementById('loader').style.display = 'none';
+  document.getElementById('sol-content').style.display = 'block';
+
+  renderSolucion(data, payload);
+  drawNetwork(data.alloc);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  RENDER SOLUCIÓN
+// ═══════════════════════════════════════════════════════════
+function renderSolucion(data, payload){
+  const ts = payload.oferta.reduce((a,b)=>a+b,0);
+  const td = payload.demanda.reduce((a,b)=>a+b,0);
+  const balanced = ts === td;
+
+  // Alert
+  document.getElementById('sol-alert').innerHTML = balanced
+    ? `<div class="alert alert-ok">✅ Problema balanceado: oferta (${fmt(ts)} ton) = demanda (${fmt(td)} ton). Solución óptima encontrada.</div>`
+    : `<div class="alert alert-warn">⚠️ Oferta (${fmt(ts)}) ≠ demanda (${fmt(td)}). Diferencia: ${fmt(Math.abs(ts-td))} ton.</div>`;
+
+  // Metrics
+  document.getElementById('sol-metrics').innerHTML = `
+    <div class="metric"><div class="metric-label">Costo total mínimo</div><div class="metric-value">$${fmt(data.costo_total)}</div></div>
+    <div class="metric"><div class="metric-label">Rutas activas</div><div class="metric-value">${data.rutas.length}</div></div>
+    <div class="metric"><div class="metric-label">Toneladas enviadas</div><div class="metric-value">${fmt(ts)}<span class="metric-unit"> ton</span></div></div>
+  `;
+
+  // Rutas
+  const costos = getCostos();
+  document.getElementById('sol-rutas').innerHTML = data.rutas.map(r => {
+    const esMin = costos[r.origen_idx].every(c => r.costo_unit <= c);
+    return `<tr>
+      <td>${r.origen} → ${r.destino}</td>
+      <td>${fmt(r.cantidad)}</td>
+      <td>$${r.costo_unit}</td>
+      <td>$${fmt(r.costo_total)}</td>
+      <td><span class="badge ${esMin?'badge-green':'badge-blue'}">${esMin?'⭐ Óptima':'✓ Necesaria'}</span></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('sol-total').textContent = '$' + fmt(data.costo_total);
+
+  // Cobertura
+  document.getElementById('sol-cobertura').innerHTML = data.cobertura.map(c => `
+    <div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px">
+        <strong>${c.destino}</strong>
+        <span>${fmt(c.recibe)} / ${fmt(c.demanda)} ton &nbsp;<span class="badge ${c.ok?'badge-green':'badge-red'}">${c.ok?'✅ Cubierto':'❌ Déficit'}</span></span>
+      </div>
+      <div class="prog-wrap"><div class="prog-bar" style="width:${Math.min(c.recibe/c.demanda*100,100)}%;background:${c.ok?'#1e7e34':'#c62828'}"></div></div>
+    </div>
+  `).join('');
+
+  // Vogel steps
+  const origenes = ORIGENES, destinos = DESTINOS;
+  document.getElementById('vogel-container').innerHTML = data.pasos.map(p => `
+    <div class="vogel-step">
+      <strong>Paso ${p.num}:</strong> Penalización máx en ${p.tipo} = <strong>${p.penalizacion}</strong>
+      &nbsp;→&nbsp; Asignar <strong>${fmt(p.cantidad)} ton</strong>: ${origenes[p.origen_idx]} → ${destinos[p.destino_idx]}
+      &nbsp;(costo <strong>$${p.costo_unit}/ton</strong>)
+    </div>
+  `).join('');
+
+  // Formula
+  const o = getOferta(), d = getDemanda();
+  document.getElementById('formula-box').innerHTML =
+    `<span class="comment">// Variables de decisión</span>\n` +
+    ORIGENES.map((or,i) => DESTINOS.map((de,j) => `x_${i}${j} = toneladas de ${or} → ${de}`).join('\n')).join('\n') +
+    `\n\n<span class="comment">// Función objetivo</span>\nmin Z = ${data.rutas.map(r=>`${r.costo_unit}·x_${r.origen_idx}${r.destino_idx}`).join(' + ')}\n     = $${fmt(data.costo_total)}\n\n` +
+    `<span class="comment">// Restricciones de oferta satisfechas</span>\n` +
+    ORIGENES.map((or,i) => `${or}: Σxᵢⱼ = ${fmt(data.alloc[i].reduce((a,b)=>a+b,0))} ≤ ${fmt(o[i])} ✅`).join('\n') +
+    `\n\n<span class="comment">// Restricciones de demanda satisfechas</span>\n` +
+    DESTINOS.map((de,j) => `${de}: Σxᵢⱼ = ${fmt(data.alloc.reduce((s,r)=>s+r[j],0))} ≥ ${fmt(d[j])} ✅`).join('\n');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  CANVAS — RED DE FLUJOS
+// ═══════════════════════════════════════════════════════════
+function drawNetwork(alloc){
+  const canvas = document.getElementById('redCanvas');
+  const W = canvas.offsetWidth || 700;
+  canvas.width = W; canvas.height = 360;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,W,360);
+  ctx.fillStyle = '#f8f7f4';
+  ctx.fillRect(0,0,W,360);
+
+  const ox = W * 0.18, dx = W * 0.82;
+  const oy = [80, 180, 280], dy = [80, 180, 280];
+  const r = 32;
+  const oferta  = getOferta();
+  const demanda = getDemanda();
+  const costos  = getCostos();
+
+  let maxQ = 0;
+  alloc.forEach(row => row.forEach(q => { if(q > maxQ) maxQ = q; }));
+
+  // Flechas
+  alloc.forEach((row,i) => row.forEach((q,j) => {
+    if(q <= 0) return;
+    const alpha = 0.25 + 0.75*(q/maxQ);
+    const lw    = 1.5 + 6*(q/maxQ);
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = '#c07000';
+    ctx.lineWidth   = lw;
+    ctx.beginPath();
+    const cpx = (ox+dx)/2, cpy = (oy[i]+dy[j])/2 + (i-j)*22;
+    ctx.moveTo(ox+r, oy[i]);
+    ctx.quadraticCurveTo(cpx, cpy, dx-r, dy[j]);
+    ctx.stroke();
+    // punta de flecha
+    const t = 0.95;
+    const ax = (1-t)*(1-t)*(ox+r) + 2*(1-t)*t*cpx + t*t*(dx-r);
+    const ay = (1-t)*(1-t)*oy[i]  + 2*(1-t)*t*cpy  + t*t*dy[j];
+    const bx = (1-0.93)*(1-0.93)*(ox+r) + 2*(1-0.93)*0.93*cpx + 0.93*0.93*(dx-r);
+    const by = (1-0.93)*(1-0.93)*oy[i]  + 2*(1-0.93)*0.93*cpy  + 0.93*0.93*dy[j];
+    const angle = Math.atan2(ay-by, ax-bx);
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    ctx.lineTo(ax - 12*Math.cos(angle-0.4), ay - 12*Math.sin(angle-0.4));
+    ctx.lineTo(ax - 12*Math.cos(angle+0.4), ay - 12*Math.sin(angle+0.4));
+    ctx.closePath();
+    ctx.fillStyle = '#c07000';
+    ctx.fill();
+    ctx.restore();
+    // etiqueta
+    ctx.save();
+    ctx.fillStyle = 'white';
+    ctx.fillRect(cpx-30, cpy-11, 60, 18);
+    ctx.fillStyle = '#c07000';
+    ctx.font = 'bold 10px system-ui';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(`${(q/1000).toFixed(0)}k • $${costos[i][j]}`, cpx, cpy);
+    ctx.restore();
+  }));
+
+  // Nodos origen (azul)
+  ORIGENES.forEach((nombre,i) => {
+    ctx.beginPath();
+    ctx.arc(ox, oy[i], r, 0, Math.PI*2);
+    ctx.fillStyle = '#1a5fa8'; ctx.fill();
+    ctx.strokeStyle = '#0d3d73'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 11px system-ui';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(nombre, ox, oy[i]-8);
+    ctx.font = '10px system-ui';
+    ctx.fillStyle = '#cde0f5';
+    ctx.fillText(`${(oferta[i]/1000).toFixed(0)}k ton`, ox, oy[i]+9);
+  });
+
+  // Nodos destino (verde)
+  DESTINOS.forEach((nombre,j) => {
+    ctx.beginPath();
+    ctx.arc(dx, dy[j], r, 0, Math.PI*2);
+    ctx.fillStyle = '#1e7e34'; ctx.fill();
+    ctx.strokeStyle = '#0f4d1e'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 11px system-ui';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(nombre, dx, dy[j]-8);
+    ctx.font = '10px system-ui';
+    ctx.fillStyle = '#b9e4c0';
+    ctx.fillText(`${(demanda[j]/1000).toFixed(0)}k ton`, dx, dy[j]+9);
+  });
+
+  // Etiquetas superiores
+  ctx.fillStyle = '#1a5fa8'; ctx.font = 'bold 12px system-ui';
+  ctx.textAlign = 'center';
+  ctx.fillText('🇨🇴 Colombia', ox, 32);
+  ctx.fillStyle = '#1e7e34';
+  ctx.fillText('🌍 Europa del Este', dx, 32);
+
+  // Leyenda
+  ctx.fillStyle = '#999'; ctx.font = '11px system-ui'; ctx.textAlign = 'left';
+  ctx.fillText('— Grosor = volumen asignado   •   Etiqueta = miles de ton / costo unitario', 10, 350);
+
+  const total = alloc.flat().reduce((a,b,i)=>a+b*getCostos().flat()[i],0);
+  document.getElementById('red-summary').textContent =
+    `Costo total mínimo: $${fmt(Math.round(total))} | Rutas activas: ${alloc.flat().filter(q=>q>0).length}`;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ESCASEZ
+// ═══════════════════════════════════════════════════════════
+function onSlider(){
+  const v = +document.getElementById('esc-slider').value;
+  document.getElementById('esc-val').textContent = fmt(v) + ' ton';
+  calcEscasez();
+}
+
+function setCrit(c){
+  currentCrit = c;
+  ['proporcional','min_costo','urgencia'].forEach(id => {
+    document.getElementById('crit-'+id).classList.toggle('active', id===c);
+  });
+  calcEscasez();
+}
+
+async function calcEscasez(){
+  const payload = {
+    destinos: DESTINOS,
+    demanda:  getDemanda(),
+    costos:   getCostos(),
+    disponible: +document.getElementById('esc-slider').value,
+    criterio: currentCrit
+  };
+  const res  = await fetch('/escasez', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
+  const data = await res.json();
+
+  const alertClass = data.deficit_total > 0 ? 'alert-warn' : 'alert-ok';
+  let html = `<div class="alert ${alertClass}">
+    ${data.deficit_total>0?'⚠️':'✅'}
+    Disponible: <strong>${fmt(data.disponible)} ton</strong> |
+    Demanda: <strong>${fmt(data.total_demanda)} ton</strong> |
+    Déficit: <strong>${fmt(data.deficit_total)} ton</strong> |
+    Cobertura global: <strong>${data.cobertura_pct}%</strong>
+  </div>`;
+
+  html += `<table><thead><tr><th>Destino</th><th>Demanda</th><th>Recibe</th><th>Déficit</th><th>Cobertura</th></tr></thead><tbody>`;
+  data.resultado.forEach(r => {
+    const bc = r.pct>=90?'badge-green':r.pct>=60?'badge-amber':'badge-red';
+    html += `<tr>
+      <td><strong>${r.destino}</strong></td>
+      <td>${fmt(r.demanda)}</td>
+      <td>${fmt(r.recibe)}</td>
+      <td>${fmt(r.deficit)}</td>
+      <td>
+        <span class="badge ${bc}">${r.pct}%</span>
+        <div class="prog-wrap" style="width:100px;display:inline-block;vertical-align:middle;margin-left:6px">
+          <div class="prog-bar" style="width:${r.pct}%;background:${r.pct>=90?'#1e7e34':r.pct>=60?'#c07000':'#c62828'}"></div>
+        </div>
+      </td>
+    </tr>`;
+  });
+  html += `<tr class="total-row"><td>Total</td><td>${fmt(data.total_demanda)}</td><td>${fmt(data.disponible)}</td><td>${fmt(data.deficit_total)}</td><td><span class="badge badge-amber">${data.cobertura_pct}%</span></td></tr>`;
+  html += '</tbody></table>';
+
+  const notas = {
+    proporcional: 'Todos los destinos reciben el mismo porcentaje de su demanda. Criterio más equitativo.',
+    min_costo:    'Se priorizan los destinos más baratos de abastecer. Eficiente económicamente pero puede generar inequidad.',
+    urgencia:     'Se cubre primero Sarajevo, luego Ucrania, luego Polonia. Refleja criterio humanitario de urgencia.'
+  };
+  html += `<div style="margin-top:10px;font-size:12px;color:var(--muted);padding:10px 12px;background:#f8f7f4;border-radius:8px">📌 <strong>Criterio aplicado:</strong> ${notas[currentCrit]}</div>`;
+
+  document.getElementById('esc-result').innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════
+updateTotals();
+calcEscasez();
+window.addEventListener('resize', () => { if(lastAlloc) drawNetwork(lastAlloc); });
+</script>
+</body>
+</html>
