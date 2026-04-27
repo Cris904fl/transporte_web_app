@@ -631,33 +631,56 @@ async function calcEscasez(){
 
   const disponible = +document.getElementById('esc-slider').value;
 
-  const totalOferta = ofertaOriginal.reduce((a,b)=>a+b,0);
-
-  // 🔥 factor de reducción real
-  const factor = disponible / totalOferta;
-
-  // 🔥 nueva oferta por ciudad (ESCALADA)
-  const ofertaEscalada = ofertaOriginal.map(o => Math.floor(o * factor));
-
-  const payload = {
-    origenes: ORIGENES,
-    destinos: DESTINOS,
-    oferta: ofertaEscalada,
-    demanda: demanda,
-    costos: costos
-  };
-
   const totalDemanda = demanda.reduce((a,b)=>a+b,0);
 
-  let cobertura = demanda.map((d,j) => {
-    const recibe = Math.floor(d * (disponible / totalDemanda));
-    return {
+  let cobertura = [];
+
+  // ⚖️ PROPORCIONAL
+  if (currentCrit === 'proporcional') {
+    cobertura = demanda.map((d,j) => ({
       destino: DESTINOS[j],
       demanda: d,
-      recibe: recibe
-    };
-  });
-  
+      recibe: Math.floor(d * (disponible / totalDemanda))
+    }));
+  }
+
+  // 🚨 URGENCIA (prioridad: Ucrania > Sarajevo > Polonia)
+  else if (currentCrit === 'urgencia') {
+    const prioridad = [1, 0, 2]; 
+    let restante = disponible;
+
+    cobertura = demanda.map((d,j) => ({
+      destino: DESTINOS[j],
+      demanda: d,
+      recibe: 0
+    }));
+
+    prioridad.forEach(j => {
+      const asignado = Math.min(demanda[j], restante);
+      cobertura[j].recibe = asignado;
+      restante -= asignado;
+    });
+  }
+
+  // 💰 MÍNIMO COSTO (aproximación)
+  else if (currentCrit === 'min_costo') {
+    const costosProm = costos[0].map((_,j) =>
+      costos.reduce((sum,row)=>sum+row[j],0) / costos.length
+    );
+
+    const inverso = costosProm.map(c => 1/c);
+    const sumaInv = inverso.reduce((a,b)=>a+b,0);
+
+    cobertura = demanda.map((d,j) => {
+      const share = inverso[j] / sumaInv;
+      return {
+        destino: DESTINOS[j],
+        demanda: d,
+        recibe: Math.min(d, Math.floor(disponible * share))
+      };
+    });
+  }
+
   renderEscasezReal({ cobertura }, disponible, demanda);
 }
 
