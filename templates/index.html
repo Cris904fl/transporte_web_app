@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
 <title>Transporte de Grano — Colombia → Europa del Este</title>
 <style>
   :root {
@@ -624,64 +629,34 @@ function renderEscasezReal(data, disponible, demanda){
   document.getElementById('esc-result').innerHTML = html;
 }
 
-async function calcEscasez(){
-  const ofertaOriginal = getOferta();
-  const demanda        = getDemanda();
-  const costos         = getCostos();
-
+async function calcEscasez() {
+  const demanda = getDemanda();
+  const costos  = getCostos();
   const disponible = +document.getElementById('esc-slider').value;
 
-  const totalDemanda = demanda.reduce((a,b)=>a+b,0);
+  const payload = {
+    demanda: demanda,
+    costos: costos,
+    disponible: disponible,
+    criterio: currentCrit,
+    destinos: DESTINOS
+  };
 
-  let cobertura = [];
+  const res = await fetch('/escasez', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
 
-  // ⚖️ PROPORCIONAL
-  if (currentCrit === 'proporcional') {
-    cobertura = demanda.map((d,j) => ({
-      destino: DESTINOS[j],
-      demanda: d,
-      recibe: Math.floor(d * (disponible / totalDemanda))
-    }));
-  }
+  const data = await res.json();
 
-  // 🚨 URGENCIA (prioridad: Ucrania > Sarajevo > Polonia)
-  else if (currentCrit === 'urgencia') {
-    const prioridad = [1, 0, 2]; 
-    let restante = disponible;
-
-    cobertura = demanda.map((d,j) => ({
-      destino: DESTINOS[j],
-      demanda: d,
-      recibe: 0
-    }));
-
-    prioridad.forEach(j => {
-      const asignado = Math.min(demanda[j], restante);
-      cobertura[j].recibe = asignado;
-      restante -= asignado;
-    });
-  }
-
-  // 💰 MÍNIMO COSTO (aproximación)
-  else if (currentCrit === 'min_costo') {
-    const costosProm = costos[0].map((_,j) =>
-      costos.reduce((sum,row)=>sum+row[j],0) / costos.length
-    );
-
-    const inverso = costosProm.map(c => 1/c);
-    const sumaInv = inverso.reduce((a,b)=>a+b,0);
-
-    cobertura = demanda.map((d,j) => {
-      const share = inverso[j] / sumaInv;
-      return {
-        destino: DESTINOS[j],
-        demanda: d,
-        recibe: Math.min(d, Math.floor(disponible * share))
-      };
-    });
-  }
-
-  renderEscasezReal({ cobertura }, disponible, demanda);
+  renderEscasezReal({
+    cobertura: data.resultado.map(r => ({
+      destino: r.destino,
+      demanda: r.demanda,
+      recibe: r.recibe
+    }))
+  }, disponible, demanda);
 }
 
 // ═══════════════════════════════════════════════════════════
