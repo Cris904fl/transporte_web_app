@@ -456,7 +456,11 @@ function renderSolucion(data, payload){
     `<span class="comment">// Restricciones de oferta satisfechas</span>\n` +
     ORIGENES.map((or,i) => `${or}: Σxᵢⱼ = ${fmt(data.alloc[i].reduce((a,b)=>a+b,0))} ≤ ${fmt(o[i])} ✅`).join('\n') +
     `\n\n<span class="comment">// Restricciones de demanda satisfechas</span>\n` +
-    DESTINOS.map((de,j) => `${de}: Σxᵢⱼ = ${fmt(data.alloc.reduce((s,r)=>s+r[j],0))} ≥ ${fmt(d[j])} ✅`).join('\n');
+    DESTINOS.map((de,j) => {
+      const recibido = data.alloc.reduce((s,r)=>s+r[j],0);
+      const cumple = recibido >= d[j];
+      return `${de}: Σxᵢⱼ = ${fmt(recibido)} ${cumple ? '≥' : '<'} ${fmt(d[j])} ${cumple ? '✅' : '❌'}`;
+})
 }
 
 // ═══════════════════════════════════════════════════════════
