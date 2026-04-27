@@ -345,11 +345,16 @@ function getCostos()  {
   return [0,1,2].map(i => [0,1,2].map(j => +document.getElementById(`c${i}${j}`).value));
 }
 
+document.querySelectorAll('input').forEach(inp => {
+  inp.addEventListener('change', calcEscasez);
+});
+
 function fmt(n){ return Number(n).toLocaleString('es-CO'); }
 
 function updateTotals(){
   document.getElementById('total-oferta').textContent  = fmt(getOferta().reduce((a,b)=>a+b,0)) + ' ton';
   document.getElementById('total-demanda').textContent = fmt(getDemanda().reduce((a,b)=>a+b,0)) + ' ton';
+  calcEscasez();
 }
 
 function resetData(){
