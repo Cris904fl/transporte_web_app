@@ -637,7 +637,9 @@ function renderEscasezReal(data, disponible, demanda){
 async function calcEscasez() {
   const demanda = getDemanda();
   const costos  = getCostos();
-  const disponible = +document.getElementById('esc-slider').value;
+  const totalOferta = getOferta().reduce((a,b)=>a+b,0);
+  const factor = document.getElementById('esc-slider').value / 100;
+  const disponible = totalOferta * factor;
 
   const payload = {
     demanda: demanda,
