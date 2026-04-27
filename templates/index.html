@@ -647,15 +647,18 @@ async function calcEscasez(){
     costos: costos
   };
 
-  const res  = await fetch('/resolver', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(payload)
+  const totalDemanda = demanda.reduce((a,b)=>a+b,0);
+
+  let cobertura = demanda.map((d,j) => {
+    const recibe = Math.floor(d * (disponible / totalDemanda));
+    return {
+      destino: DESTINOS[j],
+      demanda: d,
+      recibe: recibe
+    };
   });
-
-  const data = await res.json();
-
-  renderEscasezReal(data, disponible, demanda);
+  
+  renderEscasezReal({ cobertura }, disponible, demanda);
 }
 
 // ═══════════════════════════════════════════════════════════
