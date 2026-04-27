@@ -205,9 +205,9 @@
       <div style="margin-bottom:14px">
         <div style="font-size:13px;font-weight:600;margin-bottom:6px">Oferta disponible en escasez</div>
         <div class="slider-wrap">
-          <!-- El slider usa % (0-99) internamente; updateTotals() lo configura al cargar -->
-          <input type="range" id="esc-slider" min="0" max="99" step="1" value="72" oninput="onSlider()">
-          <span class="slider-val" id="esc-val">— ton (—%)</span>
+          <!-- Slider en porcentaje (0–99%) de la oferta actual -->
+          <input type="range" id="esc-slider" min="1" max="99" step="1" value="72" oninput="onSlider()">
+          <span class="slider-val" id="esc-val">cargando…</span>
         </div>
       </div>
 
@@ -571,9 +571,14 @@ async function calcEscasez(){
   const costos     = getCostos();
   const disponible = sliderToneladas();   // ← siempre calculado desde oferta actual
 
+  console.log('calcEscasez → pct:', document.getElementById('esc-slider').value,
+              '| oferta total:', getOferta().reduce((a,b)=>a+b,0),
+              '| disponible (ton):', disponible,
+              '| criterio:', currentCrit);
+
   if (disponible <= 0) {
     document.getElementById('esc-result').innerHTML =
-      `<div class="alert alert-warn">⚠️ Mueve el slider para simular escasez.</div>`;
+      `<div class="alert alert-warn">⚠️ Mueve el slider para simular escasez (actualmente 0 ton).</div>`;
     return;
   }
 
@@ -599,7 +604,14 @@ async function calcEscasez(){
 // ═══════════════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════════════
-updateTotals();   // configura slider y dispara calcEscasez()
+// Sync slider label immediately with default values (oferta inicial = 345.000)
+(function(){
+  const pct = +document.getElementById('esc-slider').value;
+  const ton = Math.round(getOferta().reduce((a,b)=>a+b,0) * pct / 100);
+  document.getElementById('esc-val').textContent = `${fmt(ton)} ton (${pct}% de oferta)`;
+})();
+
+updateTotals();  // recalcula totales y lanza calcEscasez()
 window.addEventListener('resize', ()=>{ if(lastAlloc) drawNetwork(lastAlloc); });
 </script>
 </body>
