@@ -6,8 +6,6 @@ Abrir:    http://localhost:5000
 """
 
 from flask import Flask, render_template, request, jsonify
-import numpy as np
-import json
 import os
 
 app = Flask(__name__)
@@ -41,11 +39,11 @@ def metodo_vogel(oferta, demanda, costos):
         if max_pf >= max_pc:
             i = pf.index(max_pf)
             j = min((j for j in range(n) if not col_lista[j]), key=lambda j: c[i][j])
-            tipo, pen = f"fila", max_pf
+            tipo, pen = "fila", max_pf
         else:
             j = pc.index(max_pc)
             i = min((i for i in range(m) if not fila_listo[i]), key=lambda i: c[i][j])
-            tipo, pen = f"columna", max_pc
+            tipo, pen = "columna", max_pc
 
         qty = min(s[i], d[j])
         alloc[i][j] += qty
@@ -78,10 +76,14 @@ def distribuir_escasez(demanda, costos, disponible, criterio):
     rem = float(disponible)
 
     if criterio == "proporcional":
-        ratio = disponible / sum(demanda)
-        alloc = [round(d * ratio) for d in demanda]
+        # Cada destino recibe la misma proporción de su demanda
+        total_dem = sum(demanda)
+        if total_dem > 0:
+            ratio = min(1.0, disponible / total_dem)
+            alloc = [round(d * ratio) for d in demanda]
 
     elif criterio == "min_costo":
+        # Priorizar destinos con menor costo promedio de abastecimiento
         prom = [sum(costos[i][j] for i in range(len(costos))) / len(costos)
                 for j in range(n)]
         orden = sorted(range(n), key=lambda j: prom[j])
@@ -89,12 +91,18 @@ def distribuir_escasez(demanda, costos, disponible, criterio):
             qty = min(demanda[j], rem)
             alloc[j] = int(qty)
             rem -= qty
+            if rem <= 0:
+                break
 
     elif criterio == "urgencia":
-        for j in range(n):
+        # Priorizar por mayor demanda (más urgente = más necesita)
+        orden = sorted(range(n), key=lambda j: demanda[j], reverse=True)
+        for j in orden:
             qty = min(demanda[j], rem)
             alloc[j] = int(qty)
             rem -= qty
+            if rem <= 0:
+                break
 
     return alloc
 
