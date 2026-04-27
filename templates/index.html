@@ -3,39 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-
 <title>Transporte de Grano — Colombia → Europa del Este</title>
 <style>
   :root {
-    --bg: #f4f2ed;
-    --card: #ffffff;
-    --border: rgba(0,0,0,0.1);
-    --text: #1a1a18;
-    --muted: #6b6b68;
-    --blue: #1a5fa8;
-    --blue-light: #e8f0fb;
-    --green: #1e7e34;
-    --green-light: #e8f5e9;
-    --amber: #c07000;
-    --amber-light: #fff8e1;
-    --red: #c62828;
-    --red-light: #ffebee;
-    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --bg: #f4f2ed; --card: #ffffff; --border: rgba(0,0,0,0.1); --text: #1a1a18;
+    --muted: #6b6b68; --blue: #1a5fa8; --blue-light: #e8f0fb; --green: #1e7e34;
+    --green-light: #e8f5e9; --amber: #c07000; --amber-light: #fff8e1;
+    --red: #c62828; --red-light: #ffebee; --shadow: 0 2px 8px rgba(0,0,0,0.08);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6; }
-
-  /* ── HEADER ── */
   header { background: var(--blue); color: white; padding: 18px 28px; display: flex; align-items: center; gap: 14px; }
   header h1 { font-size: 18px; font-weight: 600; }
   header p  { font-size: 12px; opacity: .8; }
   .header-icon { font-size: 32px; }
-
-  /* ── LAYOUT ── */
   .container { max-width: 1100px; margin: 0 auto; padding: 20px 16px; }
   .tabs { display: flex; gap: 4px; margin-bottom: 20px; flex-wrap: wrap; }
   .tab { padding: 8px 18px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); color: var(--muted); cursor: pointer; font-size: 13px; transition: .15s; font-weight: 500; }
@@ -49,14 +33,10 @@
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
   @media(max-width:640px) { .grid2,.grid3 { grid-template-columns: 1fr; } }
-
-  /* ── METRIC CARDS ── */
   .metric { background: #f8f7f4; border-radius: 8px; padding: 12px 14px; }
   .metric-label { font-size: 11px; color: var(--muted); margin-bottom: 2px; }
   .metric-value { font-size: 22px; font-weight: 700; color: var(--text); }
   .metric-unit  { font-size: 11px; color: var(--muted); }
-
-  /* ── TABLES ── */
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th { padding: 8px 10px; text-align: left; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid var(--border); }
   td { padding: 9px 10px; border-bottom: 1px solid rgba(0,0,0,0.04); }
@@ -64,67 +44,43 @@
   .total-row td { font-weight: 600; background: #f8f7f4; }
   input[type=number] { width: 90px; padding: 5px 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; text-align: right; background: #fafafa; }
   input[type=number]:focus { outline: none; border-color: var(--blue); background: white; }
-
-  /* ── BUTTONS ── */
   .btn { padding: 9px 20px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: .15s; }
   .btn-primary { background: var(--blue); color: white; border-color: var(--blue); }
   .btn-primary:hover { background: #144d8a; }
   .btn-secondary { background: white; color: var(--text); }
   .btn-secondary:hover { background: #f0f0f0; }
   .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-
-  /* ── BADGES ── */
   .badge { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; }
   .badge-green  { background: var(--green-light);  color: var(--green); }
   .badge-blue   { background: var(--blue-light);   color: var(--blue); }
   .badge-amber  { background: var(--amber-light);  color: var(--amber); }
   .badge-red    { background: var(--red-light);    color: var(--red); }
-
-  /* ── CANVAS ── */
   #redCanvas { width: 100%; border-radius: 10px; display: block; background: #f8f7f4; }
-
-  /* ── VOGEL STEPS ── */
   .vogel-step { padding: 9px 12px; border-left: 3px solid var(--blue); background: var(--blue-light); border-radius: 0 8px 8px 0; margin-bottom: 6px; font-size: 12px; }
   .vogel-step strong { color: var(--blue); }
   #vogel-container { max-height: 280px; overflow-y: auto; padding-right: 4px; }
-
-  /* ── RANGE SLIDER ── */
   .slider-wrap { display: flex; align-items: center; gap: 12px; }
   input[type=range] { flex: 1; accent-color: var(--blue); }
-  .slider-val { font-size: 13px; font-weight: 600; min-width: 100px; }
-
-  /* ── CRITERIO BUTTONS ── */
+  .slider-val { font-size: 13px; font-weight: 600; min-width: 140px; }
   .crit-btn { padding: 8px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: .15s; background: white; color: var(--muted); }
   .crit-btn.active { background: var(--blue); color: white; border-color: var(--blue); }
-
-  /* ── PROGRESS BARS ── */
   .prog-wrap { background: #e8e8e8; border-radius: 4px; height: 10px; overflow: hidden; margin: 4px 0; }
   .prog-bar  { height: 100%; border-radius: 4px; transition: width .5s; }
-
-  /* ── SKILL CARDS ── */
   .skill-card { border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
   .skill-icon { font-size: 22px; margin-bottom: 6px; }
   .skill-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
   .skill-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
-
-  /* ── STEPS LIST ── */
   .steps-list { counter-reset: steps; }
   .step-item { counter-increment: steps; display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
   .step-item:last-child { border: none; }
   .step-num { width: 26px; height: 26px; border-radius: 50%; background: var(--blue-light); color: var(--blue); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
   .step-text { font-size: 13px; line-height: 1.5; }
   .step-text strong { color: var(--text); }
-
-  /* ── ALERT ── */
   .alert { padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; }
   .alert-ok   { background: var(--green-light); color: var(--green); border: 1px solid #a5d6a7; }
   .alert-warn { background: var(--amber-light); color: var(--amber); border: 1px solid #ffe082; }
-
-  /* ── FORMULA BOX ── */
   .formula { background: #1a1a18; color: #a8d8a8; border-radius: 10px; padding: 16px 20px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.9; margin-bottom: 16px; }
   .formula .comment { color: #888; }
-
-  /* ── LOADER ── */
   #loader { display: none; text-align: center; padding: 30px; color: var(--muted); font-size: 13px; }
   .spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin .7s linear infinite; margin-right: 8px; vertical-align: middle; }
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -204,7 +160,6 @@
     <div id="sol-content" style="display:none">
       <div id="sol-alert"></div>
       <div class="grid3" id="sol-metrics" style="margin-bottom:16px"></div>
-
       <div class="card">
         <h2>Asignaciones óptimas — Método de Vogel</h2>
         <div class="desc">Cada ruta activa con el volumen asignado y el costo parcial correspondiente.</div>
@@ -214,19 +169,16 @@
           <tfoot><tr class="total-row"><td colspan="3">Costo total mínimo</td><td id="sol-total" colspan="2"></td></tr></tfoot>
         </table>
       </div>
-
       <div class="card">
         <h2>Cobertura de demanda</h2>
         <div class="desc">Verificación de que cada destino recibe las toneladas que necesita.</div>
         <div id="sol-cobertura"></div>
       </div>
-
       <div class="card">
         <h2>Procedimiento — Método de Vogel paso a paso</h2>
         <div class="desc">Iteraciones del algoritmo: penalización máxima → asignación → eliminación de fila/columna.</div>
         <div id="vogel-container"></div>
       </div>
-
       <div class="card">
         <h2>Formulación matemática</h2>
         <div class="formula" id="formula-box"></div>
@@ -238,7 +190,7 @@
   <div class="panel" id="panel-red">
     <div class="card">
       <h2>Red de distribución óptima</h2>
-      <div class="desc">Grosor y color de cada flecha proporcionales al volumen enviado. Haz clic en <strong>Calcular</strong> para actualizar.</div>
+      <div class="desc">Grosor y color de cada flecha proporcionales al volumen enviado.</div>
       <canvas id="redCanvas" height="360"></canvas>
       <div id="red-summary" style="margin-top:10px;font-size:13px;color:var(--muted);text-align:center"></div>
     </div>
@@ -253,8 +205,9 @@
       <div style="margin-bottom:14px">
         <div style="font-size:13px;font-weight:600;margin-bottom:6px">Oferta disponible en escasez</div>
         <div class="slider-wrap">
-          <input type="range" id="esc-slider" min="80000" max="344000" step="5000" value="250000" oninput="onSlider()">
-          <span class="slider-val" id="esc-val">250,000 ton</span>
+          <!-- El slider usa % (0-99) internamente; updateTotals() lo configura al cargar -->
+          <input type="range" id="esc-slider" min="0" max="99" step="1" value="72" oninput="onSlider()">
+          <span class="slider-val" id="esc-val">— ton (—%)</span>
         </div>
       </div>
 
@@ -262,13 +215,13 @@
         <div style="font-size:13px;font-weight:600;margin-bottom:8px">Criterio de distribución</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button class="crit-btn active" id="crit-proporcional" onclick="setCrit('proporcional')">⚖️ Proporcional</button>
-          <button class="crit-btn" id="crit-min_costo" onclick="setCrit('min_costo')">💰 Mínimo costo</button>
-          <button class="crit-btn" id="crit-urgencia" onclick="setCrit('urgencia')">🚨 Por urgencia</button>
+          <button class="crit-btn" id="crit-min_costo"          onclick="setCrit('min_costo')">💰 Mínimo costo</button>
+          <button class="crit-btn" id="crit-urgencia"           onclick="setCrit('urgencia')">🚨 Por urgencia</button>
         </div>
       </div>
 
       <div id="esc-result"></div>
-      <div id="esc-reflexion" class="alert alert-warn" style="margin-top:12px">
+      <div class="alert alert-warn" style="margin-top:12px">
         💡 <strong>Reflexión:</strong> Ante escasez, el problema deja de ser puramente matemático. El criterio elegido refleja valores políticos y éticos: ¿Es más justo que todos reciban el mismo porcentaje? ¿O que los más urgentes reciban primero?
       </div>
     </div>
@@ -288,7 +241,6 @@
         <div class="skill-card"><div class="skill-icon">💡</div><div class="skill-name">Pensamiento ético-crítico</div><div class="skill-desc">Reconocer que ante escasez el costo no es el único criterio válido: la justicia distributiva también importa.</div></div>
       </div>
     </div>
-
     <div class="card">
       <h2>Procedimiento aplicado</h2>
       <div class="desc">Pasos metodológicos seguidos para resolver el problema de transporte.</div>
@@ -303,7 +255,6 @@
         <div class="step-item"><div class="step-num">8</div><div class="step-text"><strong>Comunicación:</strong> Traducir la solución matemática a un plan de acción comprensible con tablas, gráficas y visualizaciones.</div></div>
       </div>
     </div>
-
     <div class="card">
       <h2>Modelo matemático completo</h2>
       <div class="formula">
@@ -325,7 +276,7 @@ min Z = Σ cᵢⱼ·xᵢⱼ + Σ P·sⱼ   (P = penalización por déficit)
       </div>
     </div>
   </div>
-</div><!-- /container -->
+</div>
 
 <script>
 // ═══════════════════════════════════════════════════════════
@@ -333,27 +284,41 @@ min Z = Σ cᵢⱼ·xᵢⱼ + Σ P·sⱼ   (P = penalización por déficit)
 // ═══════════════════════════════════════════════════════════
 const ORIGENES = ['Manizales','Pereira','Armenia'];
 const DESTINOS = ['Sarajevo','Ucrania','Polonia'];
-let lastAlloc = null;
+let lastAlloc  = null;
 let currentCrit = 'proporcional';
 
 // ═══════════════════════════════════════════════════════════
-//  HELPERS DE LECTURA
+//  HELPERS
 // ═══════════════════════════════════════════════════════════
 function getOferta()  { return [0,1,2].map(i => +document.getElementById('s'+i).value); }
 function getDemanda() { return [0,1,2].map(j => +document.getElementById('d'+j).value); }
 function getCostos()  {
   return [0,1,2].map(i => [0,1,2].map(j => +document.getElementById(`c${i}${j}`).value));
 }
-
-document.querySelectorAll('input').forEach(inp => {
-  inp.addEventListener('change', calcEscasez);
-});
-
 function fmt(n){ return Number(n).toLocaleString('es-CO'); }
 
+// ─── Calcula las toneladas disponibles según el % del slider ───────────────
+function sliderToneladas() {
+  const pct        = +document.getElementById('esc-slider').value; // 0-99
+  const totalOferta = getOferta().reduce((a,b)=>a+b,0);
+  // Convertimos 0-99 → 1%-99% de la oferta (nunca 100% para que siempre haya escasez)
+  return Math.round(totalOferta * pct / 100);
+}
+
+// ─── Actualiza totales Y reconfigura el slider ─────────────────────────────
 function updateTotals(){
-  document.getElementById('total-oferta').textContent  = fmt(getOferta().reduce((a,b)=>a+b,0)) + ' ton';
-  document.getElementById('total-demanda').textContent = fmt(getDemanda().reduce((a,b)=>a+b,0)) + ' ton';
+  const totalOferta  = getOferta().reduce((a,b)=>a+b,0);
+  const totalDemanda = getDemanda().reduce((a,b)=>a+b,0);
+
+  document.getElementById('total-oferta').textContent  = fmt(totalOferta)  + ' ton';
+  document.getElementById('total-demanda').textContent = fmt(totalDemanda) + ' ton';
+
+  // El slider siempre va 0-99 (%)
+  // Solo actualizamos la etiqueta con el valor real en toneladas
+  const ton = sliderToneladas();
+  const pct = +document.getElementById('esc-slider').value;
+  document.getElementById('esc-val').textContent = `${fmt(ton)} ton (${pct}% de oferta)`;
+
   calcEscasez();
 }
 
@@ -397,7 +362,6 @@ async function resolver(){
 
   document.getElementById('loader').style.display = 'none';
   document.getElementById('sol-content').style.display = 'block';
-
   renderSolucion(data, payload);
   drawNetwork(data.alloc);
 }
@@ -410,19 +374,16 @@ function renderSolucion(data, payload){
   const td = payload.demanda.reduce((a,b)=>a+b,0);
   const balanced = ts === td;
 
-  // Alert
   document.getElementById('sol-alert').innerHTML = balanced
     ? `<div class="alert alert-ok">✅ Problema balanceado: oferta (${fmt(ts)} ton) = demanda (${fmt(td)} ton). Solución óptima encontrada.</div>`
     : `<div class="alert alert-warn">⚠️ Oferta (${fmt(ts)}) ≠ demanda (${fmt(td)}). Diferencia: ${fmt(Math.abs(ts-td))} ton.</div>`;
 
-  // Metrics
   document.getElementById('sol-metrics').innerHTML = `
     <div class="metric"><div class="metric-label">Costo total mínimo</div><div class="metric-value">$${fmt(data.costo_total)}</div></div>
     <div class="metric"><div class="metric-label">Rutas activas</div><div class="metric-value">${data.rutas.length}</div></div>
     <div class="metric"><div class="metric-label">Toneladas enviadas</div><div class="metric-value">${fmt(ts)}<span class="metric-unit"> ton</span></div></div>
   `;
 
-  // Rutas
   const costos = getCostos();
   document.getElementById('sol-rutas').innerHTML = data.rutas.map(r => {
     const esMin = costos[r.origen_idx].every(c => r.costo_unit <= c);
@@ -436,7 +397,6 @@ function renderSolucion(data, payload){
   }).join('');
   document.getElementById('sol-total').textContent = '$' + fmt(data.costo_total);
 
-  // Cobertura
   document.getElementById('sol-cobertura').innerHTML = data.cobertura.map(c => `
     <div style="margin-bottom:10px">
       <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px">
@@ -447,17 +407,14 @@ function renderSolucion(data, payload){
     </div>
   `).join('');
 
-  // Vogel steps
-  const origenes = ORIGENES, destinos = DESTINOS;
   document.getElementById('vogel-container').innerHTML = data.pasos.map(p => `
     <div class="vogel-step">
       <strong>Paso ${p.num}:</strong> Penalización máx en ${p.tipo} = <strong>${p.penalizacion}</strong>
-      &nbsp;→&nbsp; Asignar <strong>${fmt(p.cantidad)} ton</strong>: ${origenes[p.origen_idx]} → ${destinos[p.destino_idx]}
+      &nbsp;→&nbsp; Asignar <strong>${fmt(p.cantidad)} ton</strong>: ${ORIGENES[p.origen_idx]} → ${DESTINOS[p.destino_idx]}
       &nbsp;(costo <strong>$${p.costo_unit}/ton</strong>)
     </div>
   `).join('');
 
-  // Formula
   const o = getOferta(), d = getDemanda();
   document.getElementById('formula-box').innerHTML =
     `<span class="comment">// Variables de decisión</span>\n` +
@@ -467,10 +424,10 @@ function renderSolucion(data, payload){
     ORIGENES.map((or,i) => `${or}: Σxᵢⱼ = ${fmt(data.alloc[i].reduce((a,b)=>a+b,0))} ≤ ${fmt(o[i])} ✅`).join('\n') +
     `\n\n<span class="comment">// Restricciones de demanda satisfechas</span>\n` +
     DESTINOS.map((de,j) => {
-      const recibido = data.alloc.reduce((s,r)=>s+r[j],0);
-      const cumple = recibido >= d[j];
-      return `${de}: Σxᵢⱼ = ${fmt(recibido)} ${cumple ? '≥' : '<'} ${fmt(d[j])} ${cumple ? '✅' : '❌'}`;
-})
+      const rec   = data.alloc.reduce((s,r)=>s+r[j],0);
+      const cumple = rec >= d[j];
+      return `${de}: Σxᵢⱼ = ${fmt(rec)} ${cumple?'≥':'<'} ${fmt(d[j])} ${cumple?'✅':'❌'}`;
+    }).join('\n');
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -485,96 +442,57 @@ function drawNetwork(alloc){
   ctx.fillStyle = '#f8f7f4';
   ctx.fillRect(0,0,W,360);
 
-  const ox = W * 0.18, dx = W * 0.82;
-  const oy = [80, 180, 280], dy = [80, 180, 280];
-  const r = 32;
+  const ox = W*0.18, dx = W*0.82;
+  const oy = [80,180,280], dy = [80,180,280];
+  const r  = 32;
   const oferta  = getOferta();
   const demanda = getDemanda();
   const costos  = getCostos();
 
   let maxQ = 0;
-  alloc.forEach(row => row.forEach(q => { if(q > maxQ) maxQ = q; }));
+  alloc.forEach(row=>row.forEach(q=>{if(q>maxQ)maxQ=q;}));
 
-  // Flechas
-  alloc.forEach((row,i) => row.forEach((q,j) => {
-    if(q <= 0) return;
-    const alpha = 0.25 + 0.75*(q/maxQ);
-    const lw    = 1.5 + 6*(q/maxQ);
-    ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.strokeStyle = '#c07000';
-    ctx.lineWidth   = lw;
-    ctx.beginPath();
-    const cpx = (ox+dx)/2, cpy = (oy[i]+dy[j])/2 + (i-j)*22;
-    ctx.moveTo(ox+r, oy[i]);
-    ctx.quadraticCurveTo(cpx, cpy, dx-r, dy[j]);
-    ctx.stroke();
-    // punta de flecha
-    const t = 0.95;
-    const ax = (1-t)*(1-t)*(ox+r) + 2*(1-t)*t*cpx + t*t*(dx-r);
-    const ay = (1-t)*(1-t)*oy[i]  + 2*(1-t)*t*cpy  + t*t*dy[j];
-    const bx = (1-0.93)*(1-0.93)*(ox+r) + 2*(1-0.93)*0.93*cpx + 0.93*0.93*(dx-r);
-    const by = (1-0.93)*(1-0.93)*oy[i]  + 2*(1-0.93)*0.93*cpy  + 0.93*0.93*dy[j];
-    const angle = Math.atan2(ay-by, ax-bx);
-    ctx.beginPath();
-    ctx.moveTo(ax, ay);
-    ctx.lineTo(ax - 12*Math.cos(angle-0.4), ay - 12*Math.sin(angle-0.4));
-    ctx.lineTo(ax - 12*Math.cos(angle+0.4), ay - 12*Math.sin(angle+0.4));
-    ctx.closePath();
-    ctx.fillStyle = '#c07000';
-    ctx.fill();
-    ctx.restore();
-    // etiqueta
-    ctx.save();
-    ctx.fillStyle = 'white';
-    ctx.fillRect(cpx-30, cpy-11, 60, 18);
-    ctx.fillStyle = '#c07000';
-    ctx.font = 'bold 10px system-ui';
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText(`${(q/1000).toFixed(0)}k • $${costos[i][j]}`, cpx, cpy);
-    ctx.restore();
+  alloc.forEach((row,i)=>row.forEach((q,j)=>{
+    if(q<=0) return;
+    const alpha = 0.25+0.75*(q/maxQ), lw = 1.5+6*(q/maxQ);
+    ctx.save(); ctx.globalAlpha=alpha; ctx.strokeStyle='#c07000'; ctx.lineWidth=lw;
+    const cpx=(ox+dx)/2, cpy=(oy[i]+dy[j])/2+(i-j)*22;
+    ctx.beginPath(); ctx.moveTo(ox+r,oy[i]); ctx.quadraticCurveTo(cpx,cpy,dx-r,dy[j]); ctx.stroke();
+    const t=0.95;
+    const ax=(1-t)**2*(ox+r)+2*(1-t)*t*cpx+t**2*(dx-r);
+    const ay=(1-t)**2*oy[i] +2*(1-t)*t*cpy+t**2*dy[j];
+    const bx=(.07)**2*(ox+r)+2*.07*.93*cpx+.93**2*(dx-r);
+    const by=(.07)**2*oy[i] +2*.07*.93*cpy+.93**2*dy[j];
+    const angle=Math.atan2(ay-by,ax-bx);
+    ctx.beginPath(); ctx.moveTo(ax,ay);
+    ctx.lineTo(ax-12*Math.cos(angle-.4),ay-12*Math.sin(angle-.4));
+    ctx.lineTo(ax-12*Math.cos(angle+.4),ay-12*Math.sin(angle+.4));
+    ctx.closePath(); ctx.fillStyle='#c07000'; ctx.fill(); ctx.restore();
+    ctx.save(); ctx.fillStyle='white'; ctx.fillRect(cpx-30,cpy-11,60,18);
+    ctx.fillStyle='#c07000'; ctx.font='bold 10px system-ui'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(`${(q/1000).toFixed(0)}k • $${costos[i][j]}`,cpx,cpy); ctx.restore();
   }));
 
-  // Nodos origen (azul)
-  ORIGENES.forEach((nombre,i) => {
-    ctx.beginPath();
-    ctx.arc(ox, oy[i], r, 0, Math.PI*2);
-    ctx.fillStyle = '#1a5fa8'; ctx.fill();
-    ctx.strokeStyle = '#0d3d73'; ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = 'white';
-    ctx.font = 'bold 11px system-ui';
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText(nombre, ox, oy[i]-8);
-    ctx.font = '10px system-ui';
-    ctx.fillStyle = '#cde0f5';
-    ctx.fillText(`${(oferta[i]/1000).toFixed(0)}k ton`, ox, oy[i]+9);
+  ORIGENES.forEach((nombre,i)=>{
+    ctx.beginPath(); ctx.arc(ox,oy[i],r,0,Math.PI*2);
+    ctx.fillStyle='#1a5fa8'; ctx.fill(); ctx.strokeStyle='#0d3d73'; ctx.lineWidth=2; ctx.stroke();
+    ctx.fillStyle='white'; ctx.font='bold 11px system-ui'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(nombre,ox,oy[i]-8); ctx.font='10px system-ui'; ctx.fillStyle='#cde0f5';
+    ctx.fillText(`${(oferta[i]/1000).toFixed(0)}k ton`,ox,oy[i]+9);
+  });
+  DESTINOS.forEach((nombre,j)=>{
+    ctx.beginPath(); ctx.arc(dx,dy[j],r,0,Math.PI*2);
+    ctx.fillStyle='#1e7e34'; ctx.fill(); ctx.strokeStyle='#0f4d1e'; ctx.lineWidth=2; ctx.stroke();
+    ctx.fillStyle='white'; ctx.font='bold 11px system-ui'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(nombre,dx,dy[j]-8); ctx.font='10px system-ui'; ctx.fillStyle='#b9e4c0';
+    ctx.fillText(`${(demanda[j]/1000).toFixed(0)}k ton`,dx,dy[j]+9);
   });
 
-  // Nodos destino (verde)
-  DESTINOS.forEach((nombre,j) => {
-    ctx.beginPath();
-    ctx.arc(dx, dy[j], r, 0, Math.PI*2);
-    ctx.fillStyle = '#1e7e34'; ctx.fill();
-    ctx.strokeStyle = '#0f4d1e'; ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = 'white';
-    ctx.font = 'bold 11px system-ui';
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText(nombre, dx, dy[j]-8);
-    ctx.font = '10px system-ui';
-    ctx.fillStyle = '#b9e4c0';
-    ctx.fillText(`${(demanda[j]/1000).toFixed(0)}k ton`, dx, dy[j]+9);
-  });
-
-  // Etiquetas superiores
-  ctx.fillStyle = '#1a5fa8'; ctx.font = 'bold 12px system-ui';
-  ctx.textAlign = 'center';
-  ctx.fillText('🇨🇴 Colombia', ox, 32);
-  ctx.fillStyle = '#1e7e34';
-  ctx.fillText('🌍 Europa del Este', dx, 32);
-
-  // Leyenda
-  ctx.fillStyle = '#999'; ctx.font = '11px system-ui'; ctx.textAlign = 'left';
-  ctx.fillText('— Grosor = volumen asignado   •   Etiqueta = miles de ton / costo unitario', 10, 350);
+  ctx.fillStyle='#1a5fa8'; ctx.font='bold 12px system-ui'; ctx.textAlign='center';
+  ctx.fillText('🇨🇴 Colombia',ox,32); ctx.fillStyle='#1e7e34';
+  ctx.fillText('🌍 Europa del Este',dx,32);
+  ctx.fillStyle='#999'; ctx.font='11px system-ui'; ctx.textAlign='left';
+  ctx.fillText('— Grosor = volumen asignado   •   Etiqueta = miles de ton / costo unitario',10,350);
 
   const total = alloc.flat().reduce((a,b,i)=>a+b*getCostos().flat()[i],0);
   document.getElementById('red-summary').textContent =
@@ -585,93 +503,104 @@ function drawNetwork(alloc){
 //  ESCASEZ
 // ═══════════════════════════════════════════════════════════
 function onSlider(){
-  const v = +document.getElementById('esc-slider').value;
-  document.getElementById('esc-val').textContent = fmt(v) + ' ton';
+  const pct = +document.getElementById('esc-slider').value;
+  const ton = sliderToneladas();
+  document.getElementById('esc-val').textContent = `${fmt(ton)} ton (${pct}% de oferta)`;
   calcEscasez();
 }
 
 function setCrit(c){
   currentCrit = c;
-  ['proporcional','min_costo','urgencia'].forEach(id => {
+  ['proporcional','min_costo','urgencia'].forEach(id=>{
     document.getElementById('crit-'+id).classList.toggle('active', id===c);
   });
   calcEscasez();
 }
 
-function renderEscasezReal(data, disponible, demanda){
+function renderEscasez(resultado, disponible, demanda){
   const totalDemanda = demanda.reduce((a,b)=>a+b,0);
+  const alertClass   = disponible < totalDemanda ? 'alert-warn' : 'alert-ok';
+  const deficit      = Math.max(0, totalDemanda - disponible);
 
   let html = `
-  <div class="alert alert-warn">
-    ⚠️ Disponible: <strong>${fmt(disponible)} ton</strong> |
-    Demanda: <strong>${fmt(totalDemanda)} ton</strong> |
-    Déficit: <strong>${fmt(totalDemanda - disponible)} ton</strong> |
+  <div class="alert ${alertClass}">
+    ${deficit>0?'⚠️':'✅'}
+    Disponible: <strong>${fmt(disponible)} ton</strong> |
+    Demanda total: <strong>${fmt(totalDemanda)} ton</strong> |
+    Déficit: <strong>${fmt(deficit)} ton</strong> |
     Cobertura global: <strong>${Math.round(disponible/totalDemanda*100)}%</strong>
   </div>
-  `;
+  <table>
+    <thead><tr><th>Destino</th><th>Demanda</th><th>Recibe</th><th>Déficit</th><th>Cobertura</th></tr></thead>
+    <tbody>`;
 
-  html += `<table>
-    <thead>
-      <tr><th>Destino</th><th>Demanda</th><th>Recibe</th><th>Déficit</th><th>Cobertura</th></tr>
-    </thead><tbody>`;
-
-  data.cobertura.forEach(c => {
-    const deficit = c.demanda - c.recibe;
-    const pct = Math.round((c.recibe / c.demanda) * 100);
-
-    html += `
-    <tr>
-      <td><strong>${c.destino}</strong></td>
-      <td>${fmt(c.demanda)}</td>
-      <td>${fmt(c.recibe)}</td>
-      <td>${fmt(deficit)}</td>
-      <td>${pct}%</td>
+  resultado.forEach(r => {
+    const def = r.demanda - r.recibe;
+    const pct = Math.round(r.recibe / r.demanda * 100);
+    const bc  = pct>=90?'badge-green':pct>=60?'badge-amber':'badge-red';
+    html += `<tr>
+      <td><strong>${r.destino}</strong></td>
+      <td>${fmt(r.demanda)}</td>
+      <td>${fmt(r.recibe)}</td>
+      <td>${fmt(def)}</td>
+      <td>
+        <span class="badge ${bc}">${pct}%</span>
+        <div class="prog-wrap" style="width:100px;display:inline-block;vertical-align:middle;margin-left:6px">
+          <div class="prog-bar" style="width:${pct}%;background:${pct>=90?'#1e7e34':pct>=60?'#c07000':'#c62828'}"></div>
+        </div>
+      </td>
     </tr>`;
   });
 
-  html += `</tbody></table>`;
+  const notas = {
+    proporcional: 'Todos los destinos reciben el mismo porcentaje de su demanda. Criterio más equitativo.',
+    min_costo:    'Se priorizan los destinos más baratos de abastecer. Eficiente económicamente pero puede generar inequidad.',
+    urgencia:     'Se cubre primero Sarajevo, luego Ucrania, luego Polonia. Refleja criterio humanitario de urgencia.'
+  };
+
+  html += `</tbody></table>
+  <div style="margin-top:10px;font-size:12px;color:var(--muted);padding:10px 12px;background:#f8f7f4;border-radius:8px">
+    📌 <strong>Criterio aplicado:</strong> ${notas[currentCrit]}
+  </div>`;
 
   document.getElementById('esc-result').innerHTML = html;
 }
 
-async function calcEscasez() {
-  const demanda = getDemanda();
-  const costos  = getCostos();
-  const totalOferta = getOferta().reduce((a,b)=>a+b,0);
-  const factor = document.getElementById('esc-slider').value / 100;
-  const disponible = totalOferta * factor;
+async function calcEscasez(){
+  const demanda    = getDemanda();
+  const costos     = getCostos();
+  const disponible = sliderToneladas();   // ← siempre calculado desde oferta actual
+
+  if (disponible <= 0) {
+    document.getElementById('esc-result').innerHTML =
+      `<div class="alert alert-warn">⚠️ Mueve el slider para simular escasez.</div>`;
+    return;
+  }
 
   const payload = {
-    demanda: demanda,
-    costos: costos,
-    disponible: disponible,
+    demanda, costos, disponible,
     criterio: currentCrit,
     destinos: DESTINOS
   };
 
-  const res = await fetch('/escasez', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
-
-  const data = await res.json();
-
-  renderEscasezReal({
-    cobertura: data.resultado.map(r => ({
-      destino: r.destino,
-      demanda: r.demanda,
-      recibe: r.recibe
-    }))
-  }, disponible, demanda);
+  try {
+    const res  = await fetch('/escasez', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    renderEscasez(data.resultado, disponible, demanda);
+  } catch(e) {
+    document.getElementById('esc-result').innerHTML =
+      `<div class="alert alert-warn">⚠️ Error al calcular escasez.</div>`;
+  }
 }
 
 // ═══════════════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════════════
-updateTotals();
-calcEscasez();
-window.addEventListener('resize', () => { if(lastAlloc) drawNetwork(lastAlloc); });
+updateTotals();   // configura slider y dispara calcEscasez()
+window.addEventListener('resize', ()=>{ if(lastAlloc) drawNetwork(lastAlloc); });
 </script>
 </body>
 </html>
