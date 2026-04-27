@@ -588,53 +588,74 @@ function setCrit(c){
   calcEscasez();
 }
 
-async function calcEscasez(){
-  const payload = {
-    destinos: DESTINOS,
-    demanda:  getDemanda(),
-    costos:   getCostos(),
-    disponible: +document.getElementById('esc-slider').value,
-    criterio: currentCrit
-  };
-  const res  = await fetch('/escasez', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
-  const data = await res.json();
+function renderEscasezReal(data, disponible, demanda){
+  const totalDemanda = demanda.reduce((a,b)=>a+b,0);
 
-  const alertClass = data.deficit_total > 0 ? 'alert-warn' : 'alert-ok';
-  let html = `<div class="alert ${alertClass}">
-    ${data.deficit_total>0?'⚠️':'✅'}
-    Disponible: <strong>${fmt(data.disponible)} ton</strong> |
-    Demanda: <strong>${fmt(data.total_demanda)} ton</strong> |
-    Déficit: <strong>${fmt(data.deficit_total)} ton</strong> |
-    Cobertura global: <strong>${data.cobertura_pct}%</strong>
-  </div>`;
+  let html = `
+  <div class="alert alert-warn">
+    ⚠️ Disponible: <strong>${fmt(disponible)} ton</strong> |
+    Demanda: <strong>${fmt(totalDemanda)} ton</strong> |
+    Déficit: <strong>${fmt(totalDemanda - disponible)} ton</strong> |
+    Cobertura global: <strong>${Math.round(disponible/totalDemanda*100)}%</strong>
+  </div>
+  `;
 
-  html += `<table><thead><tr><th>Destino</th><th>Demanda</th><th>Recibe</th><th>Déficit</th><th>Cobertura</th></tr></thead><tbody>`;
-  data.resultado.forEach(r => {
-    const bc = r.pct>=90?'badge-green':r.pct>=60?'badge-amber':'badge-red';
-    html += `<tr>
-      <td><strong>${r.destino}</strong></td>
-      <td>${fmt(r.demanda)}</td>
-      <td>${fmt(r.recibe)}</td>
-      <td>${fmt(r.deficit)}</td>
-      <td>
-        <span class="badge ${bc}">${r.pct}%</span>
-        <div class="prog-wrap" style="width:100px;display:inline-block;vertical-align:middle;margin-left:6px">
-          <div class="prog-bar" style="width:${r.pct}%;background:${r.pct>=90?'#1e7e34':r.pct>=60?'#c07000':'#c62828'}"></div>
-        </div>
-      </td>
+  html += `<table>
+    <thead>
+      <tr><th>Destino</th><th>Demanda</th><th>Recibe</th><th>Déficit</th><th>Cobertura</th></tr>
+    </thead><tbody>`;
+
+  data.cobertura.forEach(c => {
+    const deficit = c.demanda - c.recibe;
+    const pct = Math.round((c.recibe / c.demanda) * 100);
+
+    html += `
+    <tr>
+      <td><strong>${c.destino}</strong></td>
+      <td>${fmt(c.demanda)}</td>
+      <td>${fmt(c.recibe)}</td>
+      <td>${fmt(deficit)}</td>
+      <td>${pct}%</td>
     </tr>`;
   });
-  html += `<tr class="total-row"><td>Total</td><td>${fmt(data.total_demanda)}</td><td>${fmt(data.disponible)}</td><td>${fmt(data.deficit_total)}</td><td><span class="badge badge-amber">${data.cobertura_pct}%</span></td></tr>`;
-  html += '</tbody></table>';
 
-  const notas = {
-    proporcional: 'Todos los destinos reciben el mismo porcentaje de su demanda. Criterio más equitativo.',
-    min_costo:    'Se priorizan los destinos más baratos de abastecer. Eficiente económicamente pero puede generar inequidad.',
-    urgencia:     'Se cubre primero Sarajevo, luego Ucrania, luego Polonia. Refleja criterio humanitario de urgencia.'
-  };
-  html += `<div style="margin-top:10px;font-size:12px;color:var(--muted);padding:10px 12px;background:#f8f7f4;border-radius:8px">📌 <strong>Criterio aplicado:</strong> ${notas[currentCrit]}</div>`;
+  html += `</tbody></table>`;
 
   document.getElementById('esc-result').innerHTML = html;
+}
+
+async function calcEscasez(){
+  const ofertaOriginal = getOferta();
+  const demanda        = getDemanda();
+  const costos         = getCostos();
+
+  const disponible = +document.getElementById('esc-slider').value;
+
+  const totalOferta = ofertaOriginal.reduce((a,b)=>a+b,0);
+
+  // 🔥 factor de reducción real
+  const factor = disponible / totalOferta;
+
+  // 🔥 nueva oferta por ciudad (ESCALADA)
+  const ofertaEscalada = ofertaOriginal.map(o => Math.floor(o * factor));
+
+  const payload = {
+    origenes: ORIGENES,
+    destinos: DESTINOS,
+    oferta: ofertaEscalada,
+    demanda: demanda,
+    costos: costos
+  };
+
+  const res  = await fetch('/resolver', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  });
+
+  const data = await res.json();
+
+  renderEscasezReal(data, disponible, demanda);
 }
 
 // ═══════════════════════════════════════════════════════════
